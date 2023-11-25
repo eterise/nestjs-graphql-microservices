@@ -8,8 +8,8 @@ export class UsersService {
   constructor(private readonly _prisma: PrismaService) {}
 
   public async create(createUserInput: CreateUserInput) {
-    const { id, email } = createUserInput;
-    const user = await this.findOne(id);
+    const { userId, email } = createUserInput;
+    const user = await this.findOne(userId);
 
     if (user) throw new Error('User with the same id is already exist!');
 
@@ -20,14 +20,12 @@ export class UsersService {
   }
 
   public async findAll(): Promise<User[]> {
-    const res = await this._prisma.user.findMany();
-
-    return res.map(({ userId, email, password }) => {
-      return {
-        id: userId,
-        email,
-        password,
-      };
+    return this._prisma.user.findMany({
+      select: {
+        userId: true,
+        email: true,
+        password: true,
+      },
     });
   }
 
@@ -36,36 +34,34 @@ export class UsersService {
       where: {
         userId: id,
       },
+      select: {
+        userId: true,
+        email: true,
+        password: true,
+      },
     });
 
-    if (!user) return user;
-
-    const { userId, email, password } = user;
-
-    return {
-      id: userId,
-      email,
-      password,
-    };
+    return user;
   }
 
   private async _createUser({
-    id: userId,
+    userId,
     email,
     password,
   }: CreateUserInput): Promise<User> {
-    const res = await this._prisma.user.create({
+    const user = await this._prisma.user.create({
       data: {
         userId,
         email,
         password,
       },
+      select: {
+        userId: true,
+        email: true,
+        password: true,
+      },
     });
 
-    return {
-      id: res.userId,
-      email,
-      password,
-    };
+    return user;
   }
 }

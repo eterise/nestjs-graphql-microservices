@@ -6,6 +6,7 @@ import {
   ApolloFederationDriver,
   ApolloFederationDriverConfig,
 } from '@nestjs/apollo';
+import { PrismaModule } from 'nestjs-prisma';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import {
         federation: 2,
       },
     }),
+    PrismaModule.forRoot(),
   ],
   providers: [PostsResolver, PostsService],
 })

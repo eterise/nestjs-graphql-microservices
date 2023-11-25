@@ -3,7 +3,7 @@ import { InputType, Field } from '@nestjs/graphql';
 @InputType()
 export class CreatePostInput {
   @Field()
-  id: string;
+  postId: string;
 
   @Field()
   title: string;
